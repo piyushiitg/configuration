@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<!-- saved from url=(0035)http://twitter.github.io/bootstrap/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>knowlus</title>
+    <link rel="stylesheet" href="/media/stylesheet.css" type="text/css" />
+</head>
+<body>
+	<!-- Navbar
+    ================================================== -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="brand" href="/">Knowlus Configuration</a>
+				<div class="nav-collapse collapse">
+					<ul class="nav">
+						<li class="active">
+							<a href="/">Home</a>
+						</li>
+						<li class="active">
+							<a href="/genrateconfig">Config</a>
+						</li>
+						<li class="active">
+							<a href="/getclusterinfo">Cluster</a>
+						</li>
+						<li class="active">
+							<a href="/services">Services</a>
+						</li><li class="active">
+							<a href="/download">Download</a>
+						</li>
+						</li><li class="active">
+							<a href="/selftest">Selftest</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+    </div>
+        <div>
+        <p  class="text-center text-success alert" style="margin-top:40px;">{{messages}}</p>
+        </div>
+
+	<div class="container"><div style="height:5px;">&nbsp;</div>
+             <form class="form-search" method="Post">
+              <div class="input-append">
+              <input type="text" class="input-medium search-query" name="location" placeholder="Type Location Name...">
+              <button type="submit" class="btn">Location</button>
+              </div>
+             </form>
+             {% if ip_dict %}
+             <table class="table table-striped">
+                <tr>
+                   <th>Host</th><th>IP</th>
+                   </tr>
+                     {% for key, value in ip_dict.items %}
+                     <tr>
+                      <td>{{ key }}</td><td>{{ value}} </td>
+                     </tr>
+                     {% endfor %}
+               </table>
+             {% endif %}
+             {% if m_dict %}
+             <table class="table table-striped">
+                <tr>
+                   <th>Machine IP</th><th>Redis</th><th>Database</th><th>Freeswitch</th><th>Incalld</th><th>Outcalld</th><th>Postprocessd</th><th>Preprocessd</th><th>Rabbitmq</th><th>Monit</th><th>Apache</th>
+                   </tr>
+                     {% for ip, values in m_dict.items %}
+                     <tr class="error">
+                      <td>{{ ip }}</td>
+                       {% for v in values %}
+                       <td>{{ v}} </td>
+                       {% endfor %}
+                     </tr>
+                     {% endfor %}
+               </table>
+             {% endif %}
+
+
+	</div>
+	<!-- Footer
+    ================================================== -->
+    <footer class="footer">
+		  <div class="container">
+				
+		  </div>
+    </footer>
+</body>
+</html>

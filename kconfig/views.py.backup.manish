@@ -1,0 +1,222 @@
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+from django.http import HttpResponse
+from kconfig.models import systeminfo,machineinfo,selftestresults,hangupcauseresults
+from django.conf import settings
+import json
+import csv
+import datetime
+
+def home(request):
+    return render_to_response('home.html')
+
+
+def getclusterinfo(request):
+    messages = "Search Any Cluster Configuration by Location"
+    ip_dict = {}
+    m_dict = {}
+    if request.method == 'POST':
+        loc = (request.REQUEST.get("location","")).lower()
+        s = systeminfo.objects.filter(location=loc)
+        if len(s) <= 0:
+            messages = "Cluster with location %s does not Exists"%loc
+        else:
+            s = systeminfo.objects.get(location=loc)
+            ip_dict['RELEASE_VERSION'] = s.release_version
+            ip_dict['CLUSTER_IP'] = s.cluster_ip
+            ip_dict['LOCATION'] = s.location
+            ip_dict['DATABASE_HOST'] = s.db_ip
+            ip_dict['AMQP_SERVER'] = s.rabbit_ip
+            ip_dict['REDIS_IP'] = s.redis_ip
+        m = machineinfo.objects.filter(location=loc)
+        if len(m)>0:
+            for m1 in m:
+                m_dict[str(m1.machine_ip)] = [m1.redis,m1.database,m1.freeswitch,m1.incalld,m1.outcalld,m1.postprocessd,m1.preprocessd, m1.rabbitmq,m1.monit,m1.apache]
+    return render_to_response('cluster.html',{'ip_dict': ip_dict,'m_dict':m_dict,'messages':messages},context_instance=RequestContext(request))
+
+def genrateconfig(request):
+    messages = "Configure The New Cluster"
+    if request.method == 'POST':
+        loc = (request.REQUEST.get("location","gurgaon")).lower()
+        clusterip= request.REQUEST.get("clusterip","localhost")
+        dbip= request.REQUEST.get("dbip","localhost")
+        rdip= request.REQUEST.get("rdip","localhost")
+        rbip= request.REQUEST.get("rbip","localhost")
+        release= request.REQUEST.get("release","1.0.7c_e60084ae4f")
+        s = systeminfo.objects.filter(location=loc)
+        if len(s) > 0:
+            s = systeminfo.objects.get(location=loc)
+            s.cluster_ip = clusterip
+            s.db_ip = dbip
+            s.redis_ip = rdip
+            s.rabbit_ip = rbip
+            s.release_version = release
+            s.save()
+            messages = "Cluster %s Updated sucessfully"%loc
+        else:
+            s = systeminfo.objects.create(cluster_ip=clusterip,location=loc,db_ip=dbip,redis_ip=rdip,rabbit_ip=rbip,release_version=release)
+            messages = "Cluster added sucessfully"
+        return render_to_response('config.html',{'messages':messages},context_instance=RequestContext(request))
+    else:
+        return render_to_response('config.html',{'messages':messages},context_instance=RequestContext(request))
+
+def addmachines(request):
+    messages = "Add New Machine in The Cluster"
+    if request.method == 'POST':
+        loc = (request.REQUEST.get("location","gurgaon")).lower()
+        machineip= request.REQUEST.get("machineip","localhost")
+        pre= True if request.REQUEST.get("pre",False) == "on" else False 
+        post= True if request.REQUEST.get("post",False) == "on" else False
+        inc = True if request.REQUEST.get("inc",False)== "on" else False
+        out = True if request.REQUEST.get("out",False)== "on" else False
+        krp= True if (pre or post or out) else False 
+        ikrp= True if inc else False
+        database= True if request.REQUEST.get("database",False)== "on" else False
+        freeswitch= True if request.REQUEST.get("freeswitch",False)== "on" else False
+        redis= True if request.REQUEST.get("redis",False)== "on" else False
+        monit= True if request.REQUEST.get("monit",False)== "on" else False
+        rabbitmq= True if request.REQUEST.get("rabbitmq",False)== "on" else False
+        apache= True if request.REQUEST.get("apache",False)== "on" else False
+        s = systeminfo.objects.filter(location=loc)
+        if len(s) == 0:
+            messages = "Cluster with location %s does not Exists"%loc
+        else:
+            s = systeminfo.objects.get(location=loc)
+            m = machineinfo.objects.filter(machine_ip=machineip)
+            if len(m) > 0:
+                m = machineinfo.objects.get(machine_ip=machineip)
+                m.freeswitch = freeswitch
+                m.preprocessd = pre
+                m.postprocessd = post
+                m.incalld = inc
+                m.outcalld = out
+                m.database = database
+                m.redis = redis    
+                m.krpycd = krp
+                m.krpycd_incalld = ikrp
+                m.monit = monit
+                m.rabbitmq = rabbitmq
+                m.apache = apache
+                m.save()
+                messages = "Cluster with location %s does not Exists"%loc
+            else:
+                m = machineinfo.objects.create(location=s,machine_ip=machineip,freeswitch=freeswitch,preprocessd=pre,postprocessd=post,incalld=inc,outcalld=out,database=database,redis=redis,krpycd=krp,krpycd_incalld=ikrp,monit=monit,rabbitmq=rabbitmq,apache=apache)
+                messages = "Machine added sucessfully"
+        return render_to_response('config.html',{'messages':messages},context_instance=RequestContext(request))
+    else:
+        return render_to_response('config.html',{'messages':messages},context_instance=RequestContext(request))
+
+def services(request):
+    messages = "Knowlus Services"        
+    m_list = []
+    s = systeminfo.objects.all()
+    for s1 in s:
+        m = machineinfo.objects.filter(location=s1)
+        flag = True
+        for m1 in m:
+            if flag:
+                m_list.append([str(m1.location),m1.machine_ip,m1.redis,m1.database,m1.freeswitch,m1.incalld,m1.outcalld,m1.postprocessd,m1.preprocessd, m1.rabbitmq,m1.monit,m1.apache])
+                flag = False
+            else:
+                m_list.append(['',m1.machine_ip,m1.redis,m1.database,m1.freeswitch,m1.incalld,m1.outcalld,m1.postprocessd,m1.preprocessd, m1.rabbitmq,m1.monit,m1.apache])
+    return render_to_response('services.html',{'m_list':m_list,'messages':messages},context_instance=RequestContext(request))
+
+def download(request):
+    messages = "Installation step for Knowlus Deb"
+    return render_to_response('download.html',{'messages':messages})
+
+
+def hangupcauseanalysis(request):
+    data = request.REQUEST
+    analysis_hour = data.get('analysis_hour')
+    analysis_result = json.loads(eval(data.get('analysis_result')))
+    
+    for hangup_cause in analysis_result.keys():
+        hangupcauseresultsentry = hangupcauseresults.objects.create(result_datetime=analysis_hour, hangup_cause=hangup_cause, call_count=analysis_result[hangup_cause])
+
+    return HttpResponse("Maja aa gaya. Entry add kardi for time = " + str(analysis_hour))
+
+
+def incrementcount(request):
+    data = request.REQUEST
+    result = data.get('result')
+    final_result = json.loads(eval(result))
+
+    for number in final_result.keys():
+        if final_result[number]['result'] == 'PASS':
+            bool_result = True
+        else:
+            bool_result = False
+
+        now = datetime.datetime.now()
+        instance = now.strftime("%Y-%m-%d %H:%M:%S")
+
+        selftestresultsentry = selftestresults.objects.create(selftest_type=final_result[number]['selftest_type'], number_associated=number, result=bool_result, totalcalls=final_result[number]['totalcalls'], successcalls=final_result[number]['successcalls'], failcalls=final_result[number]['failcalls'], result_time=instance)
+
+    return HttpResponse("Maja aa gaya. Result = " + str(final_result))
+
+def selftest(request):
+    messages = "Selftest Results and Uptime"
+    total_counts = []
+    for countresult in selftestresults.objects.raw('SELECT * FROM kconfig_selftestresults a WHERE (SELECT count(*) FROM kconfig_selftestresults WHERE number_associated=a.number_associated AND result_time>a.result_time) <=0 ORDER BY number_associated, result_time DESC'):
+        total_counts.append([countresult.number_associated, countresult.totalcalls, countresult.successcalls, countresult.failcalls])
+    m_list = []
+    m_dict = {}
+    for testresult in selftestresults.objects.raw('SELECT id, number_associated, result FROM kconfig_selftestresults a WHERE (SELECT count(*) FROM kconfig_selftestresults WHERE number_associated=a.number_associated AND result_time>a.result_time) <=3 ORDER BY number_associated, result_time DESC'):
+        if testresult.number_associated not in m_dict: 
+            m_dict[testresult.number_associated] = []
+        if testresult.result:
+            m_dict[testresult.number_associated].append("PASS")
+        else:
+            m_dict[testresult.number_associated].append("FAIL")
+
+    for number in m_dict.keys():
+        m_list.append([number] + m_dict[number])
+
+    ##here getting details of hangup cause analysis
+
+    hangup_result_header = []
+    hangup_result_detail = []
+    hangup_result_header.append('Result Datetime\ Hangup Causes')
+
+    for hangupresult in hangupcauseresults.objects.raw('SELECT * FROM kconfig_hangupcauseresults WHERE result_datetime = (SELECT max(result_datetime) FROM kconfig_hangupcauseresults)'):
+        if not hangup_result_detail:
+	    hangup_result_detail.append(hangupresult.result_datetime)
+	hangup_result_header.append(str(hangupresult.hangup_cause))
+	hangup_result_detail.append(str(hangupresult.call_count))
+    
+
+    ##here  collecting hangup stats from knowlus api
+    url=u'http://182.71.101.206/api/voice/get_hangup_stats/'
+    d = dict()
+    param = urllib.urlencode(d)
+    resp = urllib2.urlopen(url, param)
+    z = resp.read()
+    result = eval(z)
+
+    
+
+    ####
+
+#    m_list.append(['selftestFAX','Pass','Fail','Pass','Fail'])
+#    m_list.append(['selftestDTMF','Pass','Fail','Pass','Fail'])
+#    m_list.append(['selftestINCOMING','Pass','Fail','Pass','Fail'])
+#    m_list.append(['selftestOUTGOING','Pass','Fail','Pass','Fail'])
+#    m_list.append(['selftestCallTransfer','Pass','Fail','Pass','Fail'])
+#    total_counts.append(['selftestFAX',20,15,5])
+#    total_counts.append(['selftestDTMF',20,13,7])
+#    total_counts.append(['selftestINCOMING',20,12,8])
+#    total_counts.append(['selftestOUTGOING',20,19,1])
+#    total_counts.append(['selftestCallTransfer',20,20,0])
+    return render_to_response('selftest.html',{'m_list':m_list,'total_counts':total_counts,'messages':messages,'hangup_result_header':hangup_result_header,'hangup_result_detail':hangup_result_detail},context_instance=RequestContext(request))
+
+def genratetxt(request):
+    location = request.REQUEST.get("cluster_ip","10.60.20.36")
+    s = systeminfo.objects.get(cluster_ip=location)
+    response = HttpResponse(content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename="settings.py"'
+    writer = csv.writer(response)
+    writer.writerow(['DATABASE_HOST=%s'%s.db_ip])
+    writer.writerow(['AMQP_SERVER=%s'%s.rabbit_ip])
+    writer.writerow(['FREESWITCH_HOST=%s'%s.fs_ip])
+    return render_to_response('fillform.html',{'ip_dict': ip_dict})

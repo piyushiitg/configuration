@@ -1,0 +1,67 @@
+ErrorDocument 404 "<h1>Page Not Found</h1>"
+ErrorDocument 500 "<h1>Internal Server Error</h1>"
+ExtendedStatus On 
+<Location /server-status>
+    SetHandler server-status
+
+    Order Deny,Allow
+    Allow from All
+</Location>
+
+
+<VirtualHost *:9999>
+
+    ServerAdmin "admin@voicetechsite.com"
+    ServerName  "demo.knowlarity.com"
+    ServerAlias "www.demo.knowlarity.com"
+    DocumentRoot "/srv/configuration"
+
+    RewriteEngine On
+
+    Alias "/media/" "/srv/configuration/media/"
+    <Directory "/srv/configuration/media/">
+#        AllowOverride AuthConfig
+#        AuthName "Add your login message here."
+#        AuthType Basic
+#        AuthUserFile /srv/configuration/authrecords
+#        AuthGroupFile /dev/null
+#        require valid-user
+        Order Deny,Allow
+        Allow from All
+        Options Indexes FollowSymLinks
+        IndexOptions FancyIndexing
+    </Directory>
+
+    Alias "/admin-media/" "/usr/share/pyshared/django/contrib/admin/media/"
+    <Directory "/usr/share/python-support/python-django/django/contrib/admin/media">
+        Order Deny,Allow
+        Allow from All
+        Options Indexes FollowSymLinks
+        IndexOptions FancyIndexing
+    </Directory>
+
+    Alias "/play_sound/" "/srv/sounds/"
+    <Directory "/srv/sounds">
+        Order Deny,Allow
+        Allow from All
+        Options Indexes FollowSymLinks
+        IndexOptions FancyIndexing
+    </Directory>
+
+    #Alias /media/delmonte/ /srv/sounds/
+    <Directory /srv/sounds/>
+        Options -Indexes FollowSymLinks MultiViews
+        Order allow,deny
+        Allow from all
+    </Directory>
+
+    WSGIScriptAlias "/" "/srv/configuration/apache/django.wsgi"
+    WSGIScriptReloading Off
+
+    # Possible values include: debug, info, notice, warn, error, crit,
+    # alert, emerg.
+    LogLevel debug 
+
+    ErrorLog /var/log/apache2/knowlus.err
+    CustomLog /var/log/apache2/knowlus.log combined
+</VirtualHost>

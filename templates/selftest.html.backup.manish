@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<!-- saved from url=(0035)http://twitter.github.io/bootstrap/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>knowlus</title>
+    <link rel="stylesheet" href="/media/stylesheet.css" type="text/css" />
+
+    <script type="text/javascript"> 
+	function RefreshPage(Period) {
+	    setTimeout("location.reload(true);", Period);
+	}
+
+	function DisplayManualDiv() {
+	    document.getElementById("manualtestdiv").style.display = 'block';
+	}
+
+	function HideManualDiv() {
+            document.getElementById("manualtestdiv").style.display = 'none';
+        }
+    </script>
+
+</head>
+<body onload="HideManualDiv(); RefreshPage(60000)">
+	<!-- Navbar
+    ================================================== -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="brand" href="/">Knowlus Configuration</a>
+				<div class="nav-collapse collapse">
+					<ul class="nav">
+						<li class="active">
+							<a href="/">Home</a>
+						</li>
+						<li class="active">
+							<a href="/genrateconfig">Config</a>
+						</li>
+						<li class="active">
+							<a href="/getclusterinfo">Cluster</a>
+						</li>
+						<li class="active">
+							<a href="/services">Services</a>
+						</li><li class="active">
+							<a href="/download">Download</a>
+						</li>
+                                                  </li><li class="active">
+                                                        <a href="/selftest">Selftest</a>
+                                                </li>
+
+					</ul>
+				</div>
+			</div>
+		</div>
+    </div>
+    <div>
+        <p  class="text-center text-success alert" style="margin-top:40px;">{{messages}}</p>
+        </div>
+
+	<div>
+	<p  class="text-center text-success alert" style="margin-top:40px;">Hangup Cause Analysis At Okhla</p>
+	<table class="table table-bordered">
+	    <tr class="info">
+		{% for header in hangup_result_header %}
+                <th>{{ header }}</th>
+		{% endfor %}
+	    </tr>
+	    <tr class="success">
+		{% for detail in hangup_result_detail %}
+                <td>{{ detail }}</td>
+		{% endfor %}
+	    </tr>
+	</table>
+	</div>
+
+	<div>
+        <p  class="text-center text-success alert" style="margin-top:40px;"><a href="manualtest" target=_blank >manual test</a></p>
+
+<!--        <p  class="text-center text-success alert" style="margin-top:40px;"><a href="javascript:void(0)" onclick="DisplayManualDiv()">manual test</a></p>
+-->	
+	<div id="manualtestdiv">
+        <p  class="text-right text-success alert" style="margin-top:20px;"><a href="javascript:void(0)" onclick="HideManualDiv()">close</a></p>
+
+	<input type="text" id="name" />
+	<input type="button" id="searchSubmit" />
+
+	</div>
+	</div>
+
+
+	<div class="container"><div style="height:5px;">&nbsp;</div>
+              {% if m_list %}
+             <table class="table table-bordered">
+                <tr class="info">
+                   <th>Type</th><th>15 Min</th><th>30 Min</th><th>45 Min</th><th>60 Min</th>
+                </tr>
+                 {% for v in m_list %}
+                  <tr class="success">
+                      {% for v1 in v %}
+                          {% if v1 == "FAIL" %}
+                              <td class="fail">{{ v1}} </td>
+                          {% else %}
+                              {% if v1 == "PASS" %}
+                                  <td class="pass">{{ v1}} </td>
+                              {% else %}
+                                  <td>{{ v1}} </td>
+                              {% endif %}
+                          {% endif %}
+                       {% endfor %}
+                 </tr>
+                  {% endfor %}
+
+             </table>
+            {% endif %}
+	</div>
+	<div class="container"><div style="height:5px;">&nbsp;</div>
+              {% if total_counts %}
+             <table class="table table-bordered">
+                <tr class="warning">
+                   <th>Type</th><th>Total Call</th><th>Sucess</th><th>Failure</th>
+                </tr>
+                 {% for v in total_counts %}
+                  <tr class="error">
+                      {% for v1 in v %}
+                       <td>{{ v1}} </td>
+                       {% endfor %}
+                 </tr>
+                  {% endfor %}
+
+             </table>
+            {% endif %}
+	</div>
+	
+
+	<!-- Footer
+    ================================================== -->
+    <footer class="footer">
+		  <div class="container">
+				
+		  </div>
+    </footer>
+</body>
+</html>

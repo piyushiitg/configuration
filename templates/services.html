@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<!-- saved from url=(0035)http://twitter.github.io/bootstrap/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>knowlus</title>
+    <link rel="stylesheet" href="/media/stylesheet.css" type="text/css" />
+</head>
+<body>
+	<!-- Navbar
+    ================================================== -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="brand" href="/">Knowlus Configuration</a>
+				<div class="nav-collapse collapse">
+					<ul class="nav">
+						<li class="active">
+							<a href="/">Home</a>
+						</li>
+						<li class="active">
+							<a href="/genrateconfig">Config</a>
+						</li>
+						<li class="active">
+							<a href="/getclusterinfo">Cluster</a>
+						</li>
+						<li class="active">
+							<a href="/services">Services</a>
+						</li><li class="active">
+							<a href="/download">Download</a>
+						</li>
+                                                  </li><li class="active">
+                                                        <a href="/selftest">Selftest</a>
+                                                </li>
+
+					</ul>
+				</div>
+			</div>
+		</div>
+    </div>
+    <div>
+        <p  class="text-center text-success alert" style="margin-top:40px;">{{messages}}</p>
+        </div>
+
+	<div class="container"><div style="height:5px;">&nbsp;</div>
+                {% if m_list %}
+             <table class="table table-striped">
+                <tr>
+                   <th>Cluster</th><th>Machine IP</th><th>Redis</th><th>Database</th><th>Freeswitch</th><th>Incalld</th><th>Outcalld</th><th>Postprocessd</th><th>Preprocessd</th><th>Rabbitmq</th><th>Monit</th><th>Apache</th>
+                </tr>
+                  {% for v in m_list %}
+                  <tr>
+                      {% for v1 in v %}
+                       <td>{{ v1}} </td>
+                       {% endfor %}
+                 </tr>
+                  {% endfor %}
+               </table>
+               {% endif %} 
+
+	</div>
+	<!-- Footer
+    ================================================== -->
+    <footer class="footer">
+		  <div class="container">
+				
+		  </div>
+    </footer>
+</body>
+</html>

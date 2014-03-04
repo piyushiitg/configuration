@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<!-- saved from url=(0035)http://twitter.github.io/bootstrap/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>knowlus</title>
+    <link rel="stylesheet" href="/media/stylesheet.css" type="text/css" />
+</head>
+<body>
+	<!-- Navbar
+    ================================================== -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="brand" href="/">Knowlus Configuration</a>
+				<div class="nav-collapse collapse">
+					<ul class="nav">
+						<li class="active">
+							<a href="/">Home</a>
+						</li>
+						<li class="active">
+							<a href="/genrateconfig">Config</a>
+						</li>
+						<li class="active">
+							<a href="/getclusterinfo">Cluster</a>
+						</li>
+						<li class="active">
+							<a href="/services">Services</a>
+						</li><li class="active">
+							<a href="/download">Download</a>
+						</li>
+                                              </li><li class="active">
+                                                        <a href="/selftest">Selftest</a>
+                                                </li>
+
+					</ul>
+				</div>
+			</div>
+		</div>
+    </div>
+        <div>
+        <p  class="text-center text-success alert" style="margin-top:40px;">{{messages}}</p>
+        </div>
+
+	<div class="container"><div style="height:5px;">&nbsp;</div>
+<p>The Knowlus Installation simplifies the process of installing Knowlus.</p>
+           <p>
+  <h4>Prerequisites</h4>		
+   <p> Install the following software before installing the Python Helper library. </p>
+<ul>
+<li>Python >= 2.7.3 - Most Linux installations come installed with Python; if you are using a Windows system, see your local documentation to install Python. Check out the <a href="http://www.python.org/getit">www.python.org/getit</a> site also to download and install Python.</li>
+</ul>
+<li>
+  <h4>Installation</h4>
+  <ul>
+  <li>  Add Repository in sources.list </li>
+         <code>sudo vim /etc/apt/sources.list </code> 
+           <p>or </p>   
+         <code> sudo gedit /etc/apt/sources.list </code> 
+
+  <li>  Add the following line to the list and save it. </li>
+         <code>
+         deb http://10.60.20.136/repo/ / </code></br>
+         <code>deb http://10.60.20.136/repopack/ /</code>
+  <li>  Now update the system.</li>
+         <code> sudo apt-get update</code>
+  <li>  Install Package</li>
+         <code> sudo apt-get install knowluspackage</code>
+  <li>  During installation while creating knowlus database it will ask you some details. Give username & password as "knowlus" & give some email id if it asks.</li>
+  <li>  If the installation is done correctly the six services it runs in the end will work fine. The final output will be something like this: 
+		 <code>
+ 		<p>Starting Services</p>
+                 <p>* Restarting knowlus rpc server for IO intensive tasks krpycd           [ OK ]</p> 
+		 <p>* Restarting knowlus rpc server for IO intensive tasks krpycd_incalld   [ OK ] </p>
+		 <p>* Restarting outgoing call handler outcalld                             [ OK ] </p>
+		 <p>* Restarting incoming call handler incalld                              [ OK ] </p>
+		 <p>* Restarting preprocessor daemon preprocessd                            [ OK ] </p>
+		 <p>* Restarting postprocessor daemon postprocessd                          [ OK ] </p>
+</code></li>
+</ul>
+  </div>
+	<!-- Footer
+    ================================================== -->
+    <footer class="footer">
+		  <div class="container">
+				
+		  </div>
+    </footer>
+</body>
+</html>

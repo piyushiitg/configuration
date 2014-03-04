@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<!-- saved from url=(0035)http://twitter.github.io/bootstrap/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>knowlus</title>
+    <link rel="stylesheet" href="/media/stylesheet.css" type="text/css" />
+</head>
+<body>
+	<!-- Navbar
+    ================================================== -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="brand" href="/">Knowlus Configuration</a>
+				<div class="nav-collapse collapse">
+					<ul class="nav">
+						<li class="active">
+							<a href="/">Home</a>
+						</li>
+						<li class="active">
+							<a href="/genrateconfig">Config</a>
+						</li>
+						<li class="active">
+							<a href="/getclusterinfo">Cluster</a>
+						</li>
+						<li class="active">
+							<a href="/services">Services</a>
+						</li><li class="active">
+							<a href="/download">Download</a>
+						</li>
+                                                  </li><li class="active">
+                                                        <a href="/selftest">Selftest</a>
+                                                </li>
+
+					</ul>
+				</div>
+			</div>
+		</div>
+    </div>
+        <div>
+        <p  class="text-center text-success alert" style="margin-top:40px;">{{messages}}</p>
+        </div>
+
+	<div class="container"><div style="height:20px;">&nbsp;</div>
+              <form method="Post">
+                <label>Location:</label><input type="text" name="location"></br>
+               <label>Cluster IP:</label> <input type="text" name="clusterip"></br>
+               <label>DataBase IP:</label> <input type="text" name="dbip"></br>
+               <label>Rabbitmq IP:</label> <input type="text" name="rbip"></br>
+               <label>Redis IP:</label> <input type="text" name="rdip"></br>
+               <label>Release Version:</label> <input type="text" name="rv"></br>
+               <input class="btn btn-primary" type="submit" value="Add/Edit">
+              </form>
+              
+
+	</div>
+	<div class="container"><div style="height:5px;">&nbsp;</div>
+              <form method="Post" action="/addmachines">
+                <label>Location:</label><input type="text" name="location"></br>
+                <label>IP:</label> <input type="text" name="machineip"></br>
+  <fieldset>
+              <table>
+                <tr>
+                <label class="checkbox inline">
+                 <input type="checkbox" name='pre'> Preprocessd
+                </label>
+                <label class="checkbox inline">
+                 <input type="checkbox" name='post'> Postprocessd
+                </label>
+                <label class="checkbox inline">
+                 <input type="checkbox" name='in'> Incalld
+                </label>
+                <label class="checkbox inline">
+                 <input type="checkbox" name='out'> Outcalld
+                </label>
+                <label class="checkbox inline">
+                 <input type="checkbox" name='database'> Database
+                </label>
+                <label class="checkbox inline">
+                 <input type="checkbox" name='freeswitch'> Freeswitch
+                </label>
+                <label class="checkbox inline">
+                 <input type="checkbox" name='redis'> Redis
+                </label>
+                <label class="checkbox inline">
+                 <input type="checkbox" name='rabbitmq'> Rabbitmq
+                </label>
+                <label class="checkbox inline">
+                 <input type="checkbox" name='apache'> Apache
+                </label>
+                <label class="checkbox inline">
+                 <input type="checkbox" name='rabbitmq'> Monit
+                </label>
+             </tr>
+            </table>
+  </fieldset>
+               <input class="btn btn-primary" type="submit" value="Add/Edit Machine">
+              </form>
+              
+
+	</div>
+	
+	<!-- Footer
+    ================================================== -->
+    <footer class="footer">
+		  <div class="container">
+				
+		  </div>
+    </footer>
+</body>
+</html>

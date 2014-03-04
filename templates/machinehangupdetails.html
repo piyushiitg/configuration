@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<!-- saved from url=(0035)http://twitter.github.io/bootstrap/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>knowlus</title>
+    <link rel="stylesheet" href="/media/stylesheet.css" type="text/css" />
+<!--
+            var url = "http://127.0.0.1/api/voice/getservicestatus/";
+            window.location = "http://54.251.117.109:9999/hiturlandreturn?url=" + url + "&returnurl=" + {{ request.get_full_path }};
+ -->
+
+    <script type="text/javascript">
+        function RefreshPage(Period) {
+            window.location.href = "http://54.251.117.109:9999/hiturlandreturn";
+            document.getElementById("currentthrottlelimit").innerHTML = 10;
+            setTimeout("location.reload(true);", 0);
+
+        }
+
+    </script>
+
+</head>
+<body>
+	<!-- Navbar
+    ================================================== -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="brand" href="/">Knowlus Configuration</a>
+				<div class="nav-collapse collapse">
+					<ul class="nav">
+						<li class="active">
+							<a href="/">Home</a>
+						</li>
+						<li class="active">
+							<a href="/genrateconfig">Config</a>
+						</li>
+						<li class="active">
+							<a href="/getclusterinfo">Cluster</a>
+						</li>
+						<li class="active">
+							<a href="/services">Services</a>
+						</li><li class="active">
+							<a href="/download">Download</a>
+						</li>
+                                                  </li><li class="active">
+                                                        <a href="/selftest">Selftest</a>
+                                                </li>
+
+					</ul>
+				</div>
+			</div>
+		</div>
+    </div>
+    <div>
+        <p  class="text-center text-success alert" style="margin-top:40px;">{{messages}}</p>
+        </div>
+
+	<div>
+	<table class="table table-bordered">
+		{% for row in hangupdetails%}
+            {% if forloop.first %}
+        	    <tr class="info">
+            {% else %}
+    	        <tr class="success">
+            {% endif %}
+                {% for data in row %}
+                    {% if forloop.parentloop.first %}
+                        <th>{{ data }}</th>
+                    {% else %}
+                        <td class="{% if forloop.parentloop.counter0|divisibleby:2  %}type1{% else %}type2{% endif %}">{{ data }}</td>
+                    {% endif %}
+
+                {% endfor %}
+    	        </tr>
+		{% endfor %}
+	</table>
+	</div>
+
+    <div id='fl'>
+        <form action='http://54.251.117.109:9999/hiturlandreturn?url=http://127.0.0.1/api/voice/set_throttle_limit/?hostname={{ fs_machine }}&fs_machine={{ fs_machine }}&top_causes={{ top_causes }}' method='post'>
+            <p  class="text-center text-success alert" style="margin-top:40px;">Current throttle limit: <span name='currentthrottlelimit'>{{ currentthrottlelimit }}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set new throttle limit: <input type='text' name='newthrottlelimit'>&nbsp;&nbsp;<input type='submit' value='Update'></input></p>
+        </form>
+    </div>
+
+	<!-- Footer
+    ================================================== -->
+    <footer class="footer">
+		  <div class="container">
+				
+		  </div>
+    </footer>
+</body>
+</html>

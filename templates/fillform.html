@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<!-- saved from url=(0035)http://twitter.github.io/bootstrap/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>knowlus</title>
+    <link rel="stylesheet" href="/media/stylesheet.css" type="text/css" />
+</head>
+<body>
+	<!-- Navbar
+    ================================================== -->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="brand" href="#">Knowlus Configuration</a>
+				<div class="nav-collapse collapse">
+					<ul class="nav">
+						<li class="active">
+							<a href="/">Home</a>
+						</li>
+						<li class="active">
+							<a href="/genrateconfig">Config</a>
+						</li>
+						<li class="active">
+							<a href="getclusterinfo">Cluster</a>
+						</li>
+						<li class="active">
+							<a href="/code">Source Code</a>
+						</li><li class="active">
+							<a href="/about">About US</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+    </div>
+	<div class="container"><div style="height:60px;">&nbsp;</div>
+             <form class="form-search">
+              <input type="text" class="input-medium search-query">
+              <button type="submit" class="btn">Location</button>
+             </form>
+             <table class="table table-striped">
+                <tr>
+                   <th>Host</th><th>IP</th>
+                   </tr>
+                     {% for key, value in ip_dict.items %}
+                     <tr>
+                      <td>{{ key }}</td><td>{{ value}} </td>
+                     </tr>
+                     {% endfor %}
+               </table>
+              <form>
+               First name: <input type="text" name="fname"><br>
+               Last name: <input type="text" name="lname"><br>
+               <input class="btn btn-danger" type="submit" value="Submit">
+              </form>
+              
+
+	</div>
+	<!-- Footer
+    ================================================== -->
+    <footer class="footer">
+		  <div class="container">
+		  </div>
+    </footer>
+</body>
+</html>
